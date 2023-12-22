@@ -1,7 +1,7 @@
 const images = [
   {
     preview:
-      "https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820__480.jpg",
+      "https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820__340.jpg",
     original:
       "https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820_1280.jpg",
     description: "Hokkaido Flower",
@@ -65,74 +65,47 @@ const images = [
 ];
 
 const galleryRef = document.querySelector(".gallery");
-galleryRef.addEventListener("click", onClick);
 
-const markup = `<li class="gallery-item">
-  <a class="gallery-link" href="large-image.jpg">
+const markup = createGallery(images);
+galleryRef.insertAdjacentHTML("afterbegin", markup);
+
+function createGallery(images) {
+  return images
+    .map(({ preview, original, description }) => {
+      return `<li class="gallery-item">
+  <a class="gallery-link" href="${original}">
     <img
       class="gallery-image"
-      src="small-image.jpg"
-      data-source="large-image.jpg"
-      alt="Image description"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
     />
   </a>
 </li>`;
-
-function onClick(event) {
-  preventDefault();
+    })
+    .join("");
 }
 
-// import { galleryItems } from "./gallery-items.js";
-// // Change code below this line
-// //console.log(galleryItems);
+galleryRef.addEventListener("click", onClick);
 
-// const galleryRef = document.querySelector(".gallery");
-// const markup = createGallery(galleryItems);
-// galleryRef.insertAdjacentHTML("afterbegin", markup);
+function onClick(event) {
+  event.preventDefault();
 
-// /*<div class="gallery__item">
-//   <a class="gallery__link" href="large-image.jpg">
-//     <img
-//       class="gallery__image"
-//       src="small-image.jpg"
-//       data-source="small-image.jpg"
-//       alt="Image description"
-//     />
-//   </a>
-// </div>;*/
-// function createGallery(galleryItems) {
-//   return galleryItems
-//     .map(({ preview, original, description }) => {
-//       return `<div class="gallery__item">
-//             <a class="gallery__link" href="${original}">
-//             <img class="gallery__image"
-//             src="${preview}"
-//             data-source="${original}"
-//             alt="${description}" />
-//             </a>
-//             </div>`;
-//     })
-//     .join("");
-// }
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+  const largeImg = event.target.dataset.source;
 
-// galleryRef.addEventListener("click", (ev) => {
-//   ev.preventDefault();
+  const instance = basicLightbox.create(
+    `<img src="${largeImg}" width='800' height='600'>`
+  );
+  instance.show();
+}
 
-//   if (ev.target.nodeName !== "IMG") {
-//     return;
-//   }
-//   const largeImg = ev.target.dataset.source;
+window.addEventListener("keydown", onClose);
 
-//   const instance = basicLightbox.create(
-//     `<img src="${largeImg}" width='800' height='600'>`
-//   );
-//   instance.show();
-// });
-
-// /*window.addEventListener("keydown", onClose);
-
-// function onClose(ev) {
-//   if (ev.target.code === "Escape") {
-//     instance.close();
-//   }
-// }*/
+function onClose(event) {
+  if (event.target.code === "Escape") {
+    instance.close();
+  }
+}
