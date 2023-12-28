@@ -91,22 +91,21 @@ galleryRef.addEventListener("click", onClick);
 
 function onClick(event) {
   event.preventDefault();
-  const largeImg = event.target.dataset.source;
+  const original = event.target.dataset.source;
   const instance = basicLightbox.create(
-    `<img src="${largeImg}" width="800" height="600">`
+    `<img src="${original}" width="800" height="600">`
   );
   if (event.target.nodeName !== "IMG") {
     return;
   }
   instance.show();
-  console.log(event.target.nodeName);
 
-  document.addEventListener("keydown", onClose);
+  document.addEventListener("keydown", onEscClose);
 
-  function onClose(evt) {
+  function onEscClose(evt) {
     if (evt.code === "Escape") {
       instance.close();
-      document.removeEventListener("keydown", onClose);
+      document.removeEventListener("keydown", onEscClose);
     }
   }
 }
